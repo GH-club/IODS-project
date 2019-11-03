@@ -1,4 +1,11 @@
 
 # About the project
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
+I heard about this __R course's__ usefulness in handling research data quite efficiently so my interest was guaranteed, although it takes some time to get more familiar with this programming language. The idea of this course's validness for me was through an acquintance.
+
+## Aim of the course
+
+Looking forward to challenge myself with this totally new thing, and finding some tools for my research data analyzes. More about R Studio you can find from [here](http://www.rstudio.com)
+
+### Destination of this text
+You can find my project here: https://github.com/GH-Club/IODS-project 
