@@ -8,4 +8,4 @@ I heard about this __R course's__ usefulness in handling research data quite eff
 Looking forward to challenge myself with this totally new thing, and finding some tools for my research data analyzes. More about R Studio you can find from [here](http://www.rstudio.com)
 
 ### Destination of this text
-You can find my project by clicking [this](https://github.com/your_github_username/IODS-project)
+You can find my project here: https://github.com/GH-Club/IODS-project
