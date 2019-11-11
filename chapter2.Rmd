@@ -1,7 +1,71 @@
-# Insert chapter 2 title here
+# Exercise 2
 
-*Describe the work you have done this week and summarize your learning.*
+# Reading the data and exploring the structure
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+```{r, include = T}
+students2014 <- read.csv(file = "/Users/streetman/IODS-project/data/lrn14.csv", header = T, sep=",")
+students2014 <- students2014[,-1]
+str(students2014)
+dim(students2014)
+```
+The data is a subset from the main data, and this subdata consists 166 rows (observations) and 8 columns (variables).
+
+
+# Graphical overview
+```{r, include = T}
+library(GGally)
+ggpairs(students2014, mapping = aes(col=gender, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
+```
+
+Based on visualization we can detect that respondends were almost twice as much females (N=110) and their age varied between 17 and 55, and mean age was 25.
+
+
+
+# Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(Points ~ Attitude + stra + surf, data = students2014)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(Points ~ Attitude + stra, data = students2014)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(Points ~ Attitude, data = students2014)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+
+### Commentary and interpretation
+For the chosen variables Attitude, stra and surf; with stra and surf there was not significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.
+
+After that, with variable stra, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.
+
+After that, with variable attitude, there is statistically significant correlation (p = <0.000) to points with a explanatory value of 0.1856 (adj. R-square) which mean that this variable explains approx. 19% of the points achieved by students.
+
+
+# Diagnostic plots (Residuals vs. Fitted values, Normal QQ-plot and Residuals vs Leverage)
+
+```{r, include = T}
+my_model2 <- lm(Points ~ Attitude + stra + surf, data = students2014)
+
+plot(my_model2, which = c(1,2,5))
+```
+
+## Commentary
+Assumption is that the residuals are normally distributed. The residuals are the differences between the predicted and observed value in a given point.
+
+
+
