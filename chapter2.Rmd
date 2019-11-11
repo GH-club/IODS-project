@@ -1,6 +1,7 @@
 # Exercise 2
 
-# Reading the data and exploring the structure
+
+## Reading the data and exploring the structure
 
 ```{r, include = T}
 students2014 <- read.csv(file = "/Users/streetman/IODS-project/data/lrn14.csv", header = T, sep=",")
@@ -8,20 +9,24 @@ students2014 <- students2014[,-1]
 str(students2014)
 dim(students2014)
 ```
-The data is a subset from the main data, and this subdata consists 166 rows (observations) and 8 columns (variables).
+
+### Commentary
+The data is a subset from the main data, which includes different questions to students and also some demographical variables. This subdata consists 166 rows as observations and 8 columns as variables: gender, Age, Attitude, deep (deep questions to students), stra (strategic questions to students), surf (surface questions to students).
 
 
-# Graphical overview
+
+## Graphical overview
 ```{r, include = T}
 library(GGally)
 ggpairs(students2014, mapping = aes(col=gender, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
 ```
 
+### Commentary
 Based on visualization we can detect that respondends were almost twice as much females (N=110) and their age varied between 17 and 55, and mean age was 25.
 
 
 
-# Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
+## Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
 
 ```{r, include = T}
 ## Fit a linear model
@@ -56,7 +61,8 @@ After that, with variable stra, there is no statistically significant relationsh
 After that, with variable attitude, there is statistically significant correlation (p = <0.000) to points with a explanatory value of 0.1856 (adj. R-square) which mean that this variable explains approx. 19% of the points achieved by students.
 
 
-# Diagnostic plots (Residuals vs. Fitted values, Normal QQ-plot and Residuals vs Leverage)
+
+## Diagnostic plots (Residuals vs. Fitted values, Normal QQ-plot and Residuals vs Leverage)
 
 ```{r, include = T}
 my_model2 <- lm(Points ~ Attitude + stra + surf, data = students2014)
@@ -64,7 +70,7 @@ my_model2 <- lm(Points ~ Attitude + stra + surf, data = students2014)
 plot(my_model2, which = c(1,2,5))
 ```
 
-## Commentary
+### Commentary
 Assumption is that the residuals are normally distributed. The residuals are the differences between the predicted and observed value in a given point.
 
 
