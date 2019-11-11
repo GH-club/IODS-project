@@ -393,7 +393,7 @@ summary {
 <li><a href="#exercise-2">Exercise 2</a><ul>
 <li><a href="#reading-the-data-and-exploring-the-structure">1. Reading the data and exploring the structure</a></li>
 <li><a href="#graphical-overview">2. Graphical overview</a></li>
-<li><a href="#regression-model-where-explanatory-variables-are-attitude-stra-and-surf-and-dependent-variable-is-points">3. Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points</a></li>
+<li><a href="#regression-model-and-fitting-variables">3. Regression model and fitting variables</a></li>
 <li><a href="#diagnostic-plots-residuals-vs.fitted-values-normal-q-q-plot-and-residuals-vs-leverage">4. Diagnostic plots (Residuals vs. Fitted values, Normal Q-Q plot and Residuals vs Leverage)</a></li>
 </ul></li>
 </ul>
@@ -432,7 +432,7 @@ str(students2014)</code></pre>
 <pre><code>## [1] 166   7</code></pre>
 <div id="commentary" class="section level3">
 <h3>Commentary</h3>
-<p>The data is a subset from the main data, which includes different questions to students and also some demographical variables for the purpose of doing a survey of approached to learning. This subdata consists 166 rows as observations and 7 columns as variables: gender, Age, Attitude, deep (deep learning related questions), stra (strategic learning related questions), surf (surface learning related questions).</p>
+<p>The data is a subset from the main data, which includes different questions to students and also some demographical variables for the purpose of doing a survey of approaches to learning. This subdata consists 166 rows as observations and 7 columns as variables: gender, Age, Attitude, deep (deep learning related questions), stra (strategic learning related questions), surf (surface learning related questions).</p>
 </div>
 </div>
 <div id="graphical-overview" class="section level2">
@@ -449,8 +449,8 @@ str(students2014)</code></pre>
 <p>Based on visualization we can detect for example that respondends were almost twice as much females (N=110) and their age varied between 17 and 55, and mean age was 25. Regarding correlation the strongest is between attitude and points and lowest between deep and points.</p>
 </div>
 </div>
-<div id="regression-model-where-explanatory-variables-are-attitude-stra-and-surf-and-dependent-variable-is-points" class="section level2">
-<h2>3. Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points</h2>
+<div id="regression-model-and-fitting-variables" class="section level2">
+<h2>3. Regression model and fitting variables</h2>
 <pre class="r"><code>## Fit a linear model
 model_fit &lt;- lm(Points ~ Attitude + stra + surf, data = students2014)
 
@@ -525,7 +525,7 @@ summary (model_fit)</code></pre>
 ## F-statistic: 38.61 on 1 and 164 DF,  p-value: 4.119e-09</code></pre>
 <div id="commentary-and-interpretation" class="section level3">
 <h3>Commentary and interpretation</h3>
-<p>For the chosen variables Attitude, stra and surf; with stra and surf there was not significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.</p>
+<p>The target variable is Points. For the chosen explanatory variables Attitude, stra and surf: with stra and surf there is no statistically significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.</p>
 <p>After that, with variable stra, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.</p>
 <p>After that, with variable attitude, there is statistically significant correlation (p = &lt;0.000) to points with a explanatory value of 0.1856 (adj. R-square) which mean that this variable explains approx. 19% of the points achieved by students.</p>
 </div>

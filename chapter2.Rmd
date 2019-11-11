@@ -11,7 +11,7 @@ dim(students2014)
 ```
 
 ### Commentary
-The data is a subset from the main data, which includes different questions to students and also some demographical variables for the purpose of doing a survey of approached to learning. This subdata consists 166 rows as observations and 7 columns as variables: gender, Age, Attitude, deep (deep learning related questions), stra (strategic learning related questions), surf (surface learning related questions).
+The data is a subset from the main data, which includes different questions to students and also some demographical variables for the purpose of doing a survey of approaches to learning. This subdata consists 166 rows as observations and 7 columns as variables: gender, Age, Attitude, deep (deep learning related questions), stra (strategic learning related questions), surf (surface learning related questions).
 
 
 
@@ -26,7 +26,7 @@ Based on visualization we can detect for example that respondends were almost tw
 
 
 
-## 3. Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
+## 3. Regression model and fitting variables
 
 ```{r, include = T}
 ## Fit a linear model
@@ -54,7 +54,7 @@ summary (model_fit)
 
 
 ### Commentary and interpretation
-For the chosen variables Attitude, stra and surf; with stra and surf there was not significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.
+The target variable is Points. For the chosen explanatory variables Attitude, stra and surf: with stra and surf there is no statistically significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.
 
 After that, with variable stra, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.
 
