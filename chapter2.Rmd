@@ -58,7 +58,7 @@ The target variable is Points. For the chosen explanatory variables Attitude, st
 
 After that, with variable stra, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.
 
-After that, with variable attitude, there is statistically significant correlation (p = <0.000) to points with a explanatory value of 0.1856 (adj. R-square) which mean that this variable explains approx. 19% of the points achieved by students.
+After that, with variable attitude, there is statistically significant correlation (p = <0.000) to points with an explanatory value of 0.1906 (mult. R-squared) which mean that this variable explains approx. 19% of the points achieved by students.
 
 
 
