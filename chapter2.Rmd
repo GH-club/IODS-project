@@ -1,7 +1,7 @@
 # Exercise 2
 
 
-## Reading the data and exploring the structure
+## 1. Reading the data and exploring the structure
 
 ```{r, include = T}
 students2014 <- read.csv(file = "/Users/streetman/IODS-project/data/lrn14.csv", header = T, sep=",")
@@ -11,22 +11,22 @@ dim(students2014)
 ```
 
 ### Commentary
-The data is a subset from the main data, which includes different questions to students and also some demographical variables. This subdata consists 166 rows as observations and 8 columns as variables: gender, Age, Attitude, deep (deep questions to students), stra (strategic questions to students), surf (surface questions to students).
+The data is a subset from the main data, which includes different questions to students and also some demographical variables for the purpose of doing a survey of approached to learning. This subdata consists 166 rows as observations and 7 columns as variables: gender, Age, Attitude, deep (deep learning related questions), stra (strategic learning related questions), surf (surface learning related questions).
 
 
 
-## Graphical overview
+## 2. Graphical overview
 ```{r, include = T}
 library(GGally)
 ggpairs(students2014, mapping = aes(col=gender, alpha=0.3), lower = list(combo = wrap("facethist", bins = 20)))
 ```
 
 ### Commentary
-Based on visualization we can detect that respondends were almost twice as much females (N=110) and their age varied between 17 and 55, and mean age was 25.
+Based on visualization we can detect for example that respondends were almost twice as much females (N=110) and their age varied between 17 and 55, and mean age was 25. Regarding correlation the strongest is between attitude and points and lowest between deep and points.
 
 
 
-## Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
+## 3. Regression model where explanatory variables are Attitude, stra and surf; and dependent variable is Points
 
 ```{r, include = T}
 ## Fit a linear model
@@ -62,16 +62,16 @@ After that, with variable attitude, there is statistically significant correlati
 
 
 
-## Diagnostic plots (Residuals vs. Fitted values, Normal QQ-plot and Residuals vs Leverage)
+## 4. Diagnostic plots (Residuals vs. Fitted values, Normal Q-Q plot and Residuals vs Leverage)
 
 ```{r, include = T}
-my_model2 <- lm(Points ~ Attitude + stra + surf, data = students2014)
+my_model2 <- lm(Points ~ Attitude, data = students2014)
 
 plot(my_model2, which = c(1,2,5))
 ```
 
 ### Commentary
-Assumption is that the residuals are normally distributed. The residuals are the differences between the predicted and observed value in a given point.
+The residuals are the differences between the predicted and observed value in a given point. "Residuals vs. Fitted": assumption that errors don't depend on variable attitude is valid since the plots are evenly spread without any specific pattern. "Normal Q-Q": assumption is that the residuals are normally distributed and this supports it. "Residuals vs. Leverage": in general observations are not having unusually high impact.
 
 
 
