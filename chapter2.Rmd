@@ -53,7 +53,7 @@ summary (model_fit)
 ```
 
 
-### Commentary and interpretation
+### Commentary
 The target variable is Points. For the chosen explanatory variables Attitude, stra and surf: with stra and surf there is no statistically significant relationship with the target variable (p=0.117 and 0.466), therefore surf was removed.
 
 After that, with variable stra, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.
