@@ -13,6 +13,7 @@ alc <- read.csv(file = "/Users/streetman/IODS-project/data/alc.csv", header = T,
 library(dplyr)
 colnames(alc)
 ```
+#### Commentary
 The dataset includes the variables above indicating the questions to students relating to their alcohol usage
 
 
@@ -26,12 +27,14 @@ library(tidyr)
 glimpse(alc)
 ```
 
+#### Commentary
+These four variables were chosen:
 1. Age (numeric)
 2. Famsize (binary: less or equal to 3, or greater than 3)
 3. Failures (numeric: 0-3, or 4 if smth else)
 4. Absences (numeric: 0 to 93)
 
-Hypothesis: there is correlation between the high alcohol consumption and the chosen variables when analyzed in a univariate method to observe correlation
+Hypothesis: there is a correlation between the high alcohol consumption and the chosen variables when analyzed in a univariate method to observe correlation
 H0: there is no correlation between a chosen variable and high alcohol consumption
 H1: there is significant correlation between a chosen variable and high alcohol consumption
 
@@ -43,6 +46,9 @@ H1: there is significant correlation between a chosen variable and high alcohol 
 ```{r, include=T}
 summary(alc)
 ```
+#### Commentary
+For example in variable "absences" the mean absence value is 4.5 and maximum is 45. Range is wide, although 3rd quartile is 6.0, therefore most are within values 0 to 6.0.
+
 
 
 ### Graphical overview of data
@@ -54,6 +60,11 @@ alc_selected <- select(alc, one_of(c("age", "famsize", "failures", "absences")))
 gather(alc_selected) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
 ```
 
+#### Commentary
+For example in variable "age" we can detect that mainly the participants are below 19 years old.
+
+
+
 ### Variables vs. alcohol usage by histograms
 
 ### Age
@@ -63,11 +74,20 @@ g1 <- ggplot(alc, aes(x = high_use, y = age))
 g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consumption and age")
 ```
 
+#### Commentary
+Those with high alcohol consumption were mainly male and their age range is wider compared to female within this consumption category.
+
+
+
 ### Famsize
 ```{r, include=T}
 g1 <- ggplot(data = alc, aes(x = alc_use, fill = famsize))
 g1 + geom_bar()
 ```
+
+#### Commentary
+It seems that more higher the alcohol consumption then more equal are the family sizes. With lower alcohol consumption the family sizes were considerable larger.
+
 
 ### Failures
 ```{r, include=T}
@@ -76,11 +96,18 @@ g1 <- ggplot(alc, aes(x = high_use, fill = failures))
 g1 + geom_bar()
 ```
 
+#### Commentary
+Somewhat surpringly, in lower alcohol consumption the amount of failures is higher.
+
+
 ### Absences
 ```{r, include=T}
 g1 <- ggplot(alc, aes(x = high_use, y = absences))
-g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consumption and absences")
+g1 + geom_boxplot(aes(col=sex)) + ylab("absences") + ggtitle("Students alcohol consumption and absences")
 ```
+
+#### Commentary
+It seems that more the absences then more are is the high alcohol consumption with both sexes.
 
 
 
@@ -90,6 +117,8 @@ g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consum
 
 ```{r, include = T}
 ## Fit a linear model
+alc$failures <-  as.numeric(alc$failures)
+alc$famsize <-  as.numeric(alc$famsize)
 model_fit <- lm(high_use ~ age + famsize + failures + absences, data = alc)
 
 ## Print out a summary of the model
@@ -98,7 +127,8 @@ summary (model_fit)
 
 ```{r, include = T}
 ## Fit a linear model
-model_fit <- lm(high_use ~ famsize + failures + absences, data = alc)
+alc$failures <-  as.numeric(alc$failures)
+model_fit <- lm(high_use ~ age + failures + absences, data = alc)
 
 ## Print out a summary of the model
 summary (model_fit)
@@ -106,11 +136,22 @@ summary (model_fit)
 
 ```{r, include = T}
 ## Fit a linear model
+alc$failures <-  as.numeric(alc$failures)
+alc$famsize <-  as.numeric(alc$famsize)
 model_fit <- lm(high_use ~ failures + absences, data = alc)
 
 ## Print out a summary of the model
 summary (model_fit)
 ```
+#### Commentary
+The target variable is high_use (of alcohol). For the chosen explanatory variables age, family size, failures and absences: with age and family size there is no statistically significant relationship with the target variable (p=0.089 and 0.170), therefore family size was removed.
+
+After that, with variable age, there is no statistically significant relationship with the target variable (p=0.089), therefore it was removed.
+
+After that, with variables failures and absences, there is statistically significant correlation (p=0.004 and <0.000) to high_use (of alcohol) with an explanatory value of 0.07 (mult. R-squared) which means that these variables explains approx. 7% of the high_use (of alcohol) among the participants.
+
+
+
 
 
 ### Odds rations and CI
@@ -128,13 +169,16 @@ CI <- confint(m) %>% exp
 ### Printing the output
 cbind(OR, CI)
 ```
+#### Commentary
+Both variables', failures and absences, ORs indicate higher odds for high_use (of alcohol) within these variables; yet, the CI crosses value 1 with the variable failures, therefore it seems to inadequate for showing statistical significance in this sense. By this analysis, from the chosen variables, absenses seems to be the one with most statistical significance in its relation to high_use (of alcohol).
+
 
 
 ## 5. Predictive power of LR model
 
 ```{r, include=T}
 ## Fit the model
-m <- glm(high_use ~ failures + absences, data = alc, family = "binomial")
+m <- glm(high_use ~ absences, data = alc, family = "binomial")
 
 ## Predict() the probability of high_use
 probabilities <- predict(m, type = "response")
@@ -164,3 +208,7 @@ loss_func <- function(class, prob) {
 
 loss_func(class = alc$high_use, prob = alc$probability)
 ```
+#### Commentary
+After LR analysis, it was stated that variable "absences" has the most statistical significance it relation to high_use (of alcohol), therefore chosen here to test the predictive power of the LR model.
+
+After calculation, the value of 0.2879 indicates that approx. 29% are incorrect predictions with this model, yet 71% are correct ones, therefore this LR model is useful.
