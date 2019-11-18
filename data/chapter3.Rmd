@@ -1,0 +1,168 @@
+---
+title: "Chapter3"
+output: html_document
+---
+
+# 1. Getting and reading the .csv file
+getwd()
+
+```{r, include=T}
+alc <- read.csv(file = "/Users/streetman/IODS-project/data/alc.csv", header = T, sep=",")
+```
+
+
+```{r, include = T}
+library(dplyr)
+colnames(alc)
+```
+The dataset includes the variables above indicating the questions to students relating to their alcohol usage
+
+
+# 2. Relationships between high and low alcohol consumption, and choosing the parameters for this exploration
+
+## Choosing the parameters
+
+```{r, include=T}
+library(tidyr)
+glimpse(alc)
+```
+
+1. Age (numeric)
+2. Famsize (binary: less or equal to 3, or greater than 3)
+3. Failures (numeric: 0-3, or 4 if smth else)
+4. Absences (numeric: 0 to 93)
+
+Hypothesis: there is correlation between the high alcohol consumption and the chosen variables when analyzed in a univariate method to observe correlation
+H0: there is no correlation between a chosen variable and high alcohol consumption
+H1: there is significant correlation between a chosen variable and high alcohol consumption
+
+
+# 3. Distributions between the chosen variables above and the relations to alcohol consumption
+
+install.packages("tidyr")
+
+
+## Numerical overview of data
+```{r, include=T}
+summary(alc)
+```
+
+
+## Graphical overview of data
+### Distribution of the chosen variables
+```{r, include=T}
+library(tidyr); library(dplyr); library(ggplot2)
+alc_selected <- select(alc, one_of(c("age", "famsize", "failures", "absences")))
+gather(alc_selected) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+```
+
+### Variables vs. alcohol usage by histograms
+
+### Age
+
+```{r, include=T}
+g1 <- ggplot(alc, aes(x = high_use, y = age))
+g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consumption and age")
+```
+
+### Famsize
+```{r, include=T}
+g1 <- ggplot(data = alc, aes(x = alc_use, fill = famsize))
+g1 + geom_bar()
+```
+
+### Failures
+```{r, include=T}
+alc$failures <-  as.factor(alc$failures)
+g1 <- ggplot(alc, aes(x = high_use, fill = failures))
+g1 + geom_bar()
+```
+
+### Absences
+```{r, include=T}
+g1 <- ggplot(alc, aes(x = high_use, y = absences))
+g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consumption and absences")
+```
+
+
+
+# 4. Logistic regression model of the chosen variables
+
+## Fitting the LR model
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(high_use ~ age + famsize + failures + absences, data = alc)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(high_use ~ famsize + failures + absences, data = alc)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+```{r, include = T}
+## Fit a linear model
+model_fit <- lm(high_use ~ failures + absences, data = alc)
+
+## Print out a summary of the model
+summary (model_fit)
+```
+
+
+## Odds rations and CI
+
+```{r, include=T}
+### Fitting the logistic regressio model
+m <- glm(high_use ~ failures + absences, data = alc, family = "binomial")
+
+### Compute odds ratios (OR)
+OR <- coef(m) %>% exp
+
+### Compute confidence intervals (CI)
+CI <- confint(m) %>% exp
+
+### Printing the output
+cbind(OR, CI)
+```
+
+
+# 5. Predictive power of LR model
+
+```{r, include=T}
+## Fit the model
+m <- glm(high_use ~ failures + absences, data = alc, family = "binomial")
+
+## Predict() the probability of high_use
+probabilities <- predict(m, type = "response")
+
+## Add the predicted probabilities to 'alc'
+alc <- mutate(alc, probability = probabilities)
+
+## Use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction = probability > 0.5)
+
+## Tabulate the target variable versus the predictions
+results <- table(high_use = alc$high_use, prediction = alc$prediction)
+
+results
+
+tab <- table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table() %>% addmargins()
+
+tab
+```
+
+```{r, include=T}
+## Total proportion of inaccurately classified individuals
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+loss_func(class = alc$high_use, prob = alc$probability)
+```
