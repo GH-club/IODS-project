@@ -1,12 +1,10 @@
----
-title: "Chapter3"
-output: html_document
----
+# Exercise 3
 
-# 1. Getting and reading the .csv file
-getwd()
+
+## 1. Getting and reading the .csv file
 
 ```{r, include=T}
+getwd()
 alc <- read.csv(file = "/Users/streetman/IODS-project/data/alc.csv", header = T, sep=",")
 ```
 
@@ -18,9 +16,10 @@ colnames(alc)
 The dataset includes the variables above indicating the questions to students relating to their alcohol usage
 
 
-# 2. Relationships between high and low alcohol consumption, and choosing the parameters for this exploration
 
-## Choosing the parameters
+## 2. Relationships between high and low alcohol consumption, and choosing the parameters for this exploration
+
+### Choosing the parameters
 
 ```{r, include=T}
 library(tidyr)
@@ -37,18 +36,17 @@ H0: there is no correlation between a chosen variable and high alcohol consumpti
 H1: there is significant correlation between a chosen variable and high alcohol consumption
 
 
-# 3. Distributions between the chosen variables above and the relations to alcohol consumption
 
-install.packages("tidyr")
+## 3. Distributions between the chosen variables above and the relations to alcohol consumption
 
-
-## Numerical overview of data
+### Numerical overview of data
 ```{r, include=T}
 summary(alc)
 ```
 
 
-## Graphical overview of data
+### Graphical overview of data
+
 ### Distribution of the chosen variables
 ```{r, include=T}
 library(tidyr); library(dplyr); library(ggplot2)
@@ -86,9 +84,9 @@ g1 + geom_boxplot(aes(col=sex)) + ylab("age") + ggtitle("Students alcohol consum
 
 
 
-# 4. Logistic regression model of the chosen variables
+## 4. Logistic regression model of the chosen variables
 
-## Fitting the LR model
+### Fitting the LR model
 
 ```{r, include = T}
 ## Fit a linear model
@@ -115,7 +113,7 @@ summary (model_fit)
 ```
 
 
-## Odds rations and CI
+### Odds rations and CI
 
 ```{r, include=T}
 ### Fitting the logistic regressio model
@@ -132,7 +130,7 @@ cbind(OR, CI)
 ```
 
 
-# 5. Predictive power of LR model
+## 5. Predictive power of LR model
 
 ```{r, include=T}
 ## Fit the model
