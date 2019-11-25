@@ -97,7 +97,7 @@ test <- dplyr::select(test, -crime)
 summary(test)
 ```
 ### Commentary
-We made a categorical variable of crime rate with the division into quantiles indicated above. We also made datasets ("training" and "test") for testing and implementing the LDA (linear discriminant model).
+We made a categorical variable of crime rate with the division into quantiles indicated above. We also made datasets ("training" and "test") for testing and implementing the LDA (linear discriminant analysis) model.
 
 
 ## 4. Fit the linear
