@@ -13,7 +13,11 @@ library(tidyr)
 library(ggplot2)
 library(GGally)
 library(corrplot)
+```
 
+### Loading
+
+```{R, include=T}
 data("Boston")
 ```
 
@@ -25,7 +29,7 @@ dim(Boston)
 ```
 
 ### Commentary
-The dataset has 14 columns (variables) and 506 rows (observations). The data is about housing values in Boston suburbs.
+The dataset has 14 columns (variables) and 506 rows (observations). The data is about housing values in Boston suburbs. More about the data variables you can find [here](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html)
 
 
 ## 2. Graphical overview and summaries
@@ -50,6 +54,9 @@ cor_matrix %>% round(2)
 corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
 ```
 
+### Commentary
+Crime rate seems to have strongest positive correlation to property taxation rate and highways accessibility.
+
 
 ## 3. Standardize
 
@@ -58,6 +65,8 @@ boston_scaled <- scale(Boston)
 
 summary(boston_scaled)
 ```
+### Commentary
+We scaled the data to get standardization for to be able to compare variables in a better way.
 
 ### Creating categorical variable
 
@@ -87,6 +96,8 @@ test <- dplyr::select(test, -crime)
 
 summary(test)
 ```
+### Commentary
+We made a categorical variable of crime rate with the division into quantiles indicated above. We also made datasets ("training" and "test") for testing and implementing the LDA (linear discriminant model).
 
 
 ## 4. Fit the linear
@@ -115,7 +126,7 @@ lda.arrows(lda.fit, myscale = 1)
 
 
 ### Commentary
-By visualization we detect distintiveness between crime rate groups with some amount of overlapping between them.
+Here we tested the LDA model to the "training" dataset, and by visualization we detect distintiveness between crime rate groups with some amount of overlapping between them.
 
 
 ## 5. Predicting the classes and cross tabulation
@@ -126,6 +137,9 @@ lda.pred <- predict(lda.fit, newdata = test)
 
 table(correct = correct_classes, predicted = lda.pred$class)
 ```
+### Commentary
+Here we implemented the LDA to "test" dataset. It indicates that higher crime values are better predicted than lower ones. As a result, not the optimal prediction model, but fairly good.
+
 
 
 ## 6. Reload and standardize
@@ -139,6 +153,7 @@ str(boston_scaled_2)
 
 dim(boston_scaled_2)
 ```
+
 
 ### Distance matrix
 
@@ -181,3 +196,6 @@ km <- kmeans(boston_scaled_2, centers = 2)
 pairs(boston_scaled_2, col = km$cluster)
 
 ```
+
+### Commentary
+Here we clustered the data by loading it again and concluded that the it is the most optimally clustered via two clusters as indicated in the graph above where curve changes the most at this point.
