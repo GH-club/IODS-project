@@ -30,7 +30,6 @@ gii <- mutate(gii, edu2F_edu2M_ratio = edu2F / edu2M)
 gii <- mutate(gii, labF_labM_ratio = labF / labM)
 
 # common columns to use as identifiers
-
 join_by <- c("Country")
 
 # join the datasets
@@ -54,10 +53,10 @@ for(column_name in notjoined_columns) {
   # if that first column vector is numeric...
   #if(is.numeric(first_column)) {
   # take a rounded average of each row of the two columns and
-  # add the resulting vector to the alc data frame
-  #alc[column_name] <- round(rowMeans(two_columns))
+  # add the resulting vector to the hd_gii data frame
+  #hd_gii[column_name] <- round(rowMeans(two_columns))
   #} else { # else if it's not numeric...
-  # add the first column vector to the alc data frame
+  # add the first column vector to the 'hd_gii' data frame
   human[column_name] <- first_column
   #}
 }
@@ -71,7 +70,7 @@ getwd()
 setwd("/Users/streetman/IODS-project/data")
 
 # write to csv file
-write.csv(gii, "data/human.csv", row.names = FALSE)
+write.csv(gii,"/Users/streetman/IODS-project/data/human.csv", row.names = FALSE)
 
 
 
