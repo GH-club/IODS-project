@@ -1,0 +1,183 @@
+# Exercise 4
+
+## 1. Loading the data and exploring it
+
+install.packages("MASS")
+
+install.packages("corrplot")
+
+```{R, include=T}
+library(MASS)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(GGally)
+library(corrplot)
+
+data("Boston")
+```
+
+### Exploring
+
+```{R, include=T}
+str(Boston)
+dim(Boston)
+```
+
+### Commentary
+The dataset has 14 columns (variables) and 506 rows (observations). The data is about housing values in Boston suburbs.
+
+
+## 2. Graphical overview and summaries
+
+### Summary
+
+```{R, include=T}
+summary(Boston)
+
+```
+
+
+### Correlations
+
+```{R, include=T}
+cor_matrix <- cor(Boston)
+
+cor_matrix %>% round(2)
+
+"VISUALIZING the correlations"
+
+corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6)
+```
+
+
+## 3. Standardize
+
+```{R, include=T}
+boston_scaled <- scale(Boston)
+
+summary(boston_scaled)
+```
+
+### Creating categorical variable
+
+```{R, include=T}
+boston_scaled <- as.data.frame(boston_scaled)
+
+bins <- quantile(boston_scaled$crim)
+
+crime <- cut(boston_scaled$crim, breaks = bins, labels = c("low","med_low","med_high","high"), include.lowest = TRUE)
+
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+
+boston_scaled <- data.frame(boston_scaled, crime)
+
+nrow(boston_scaled)
+n <- nrow(boston_scaled)
+
+ind <- sample(n,  size = n * 0.8)
+
+train <- boston_scaled[ind,]
+
+test <- boston_scaled[-ind,]
+
+correct_classes <- test$crime
+
+test <- dplyr::select(test, -crime)
+
+summary(test)
+```
+
+
+## 4. Fit the linear
+
+```{R, include=T}
+lda.fit <- lda(crime ~ ., data = train)
+
+lda.fit
+```
+
+```{R, include=T}
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+
+classes <- as.numeric(train$crime)
+
+plot(lda.fit, dimen = 2, col=classes, pch=classes)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+
+### Commentary
+By visualization we detect distintiveness between crime rate groups with some amount of overlapping between them.
+
+
+## 5. Predicting the classes and cross tabulation
+
+```{R, include=T}
+
+lda.pred <- predict(lda.fit, newdata = test)
+
+table(correct = correct_classes, predicted = lda.pred$class)
+```
+
+
+## 6. Reload and standardize
+
+```{R, include=T}
+data(Boston)
+
+boston_scaled_2 <- scale(Boston)
+
+str(boston_scaled_2)
+
+dim(boston_scaled_2)
+```
+
+### Distance matrix
+
+```{R, include=T}
+dist_eu <- dist(boston_scaled_2)
+summary(dist_eu)
+```
+
+### Distance matrix (Manhattan method)
+
+```{R, include=T}
+dist_man <- dist(boston_scaled_2, method = "manhattan")
+
+summary(dist_eu)
+```
+
+### Clustering
+
+```{R, include=T}
+km <- kmeans(boston_scaled_2, centers = 3)
+
+pairs(boston_scaled_2, col = km$cluster)
+```
+
+### Determining
+
+```{R, include=T}
+k_max <- 10
+
+twcss <- sapply(1:k_max, function(k){kmeans(Boston, k)$tot.withinss})
+
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+
+```
+
+```{R, include=T}
+
+km <- kmeans(boston_scaled_2, centers = 2)
+
+pairs(boston_scaled_2, col = km$cluster)
+
+```
