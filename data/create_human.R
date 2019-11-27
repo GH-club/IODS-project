@@ -70,7 +70,7 @@ getwd()
 setwd("/Users/streetman/IODS-project/data")
 
 # write to csv file
-write.csv(gii,"/Users/streetman/IODS-project/data/human.csv", row.names = FALSE)
+write.csv(human,"/Users/streetman/IODS-project/data/human.csv", row.names = FALSE)
 
 
 
