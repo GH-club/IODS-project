@@ -73,4 +73,49 @@ setwd("/Users/streetman/IODS-project/data")
 write.csv(human,"/Users/streetman/IODS-project/data/human.csv", row.names = FALSE)
 
 
+# MODIFYING THE DATA (Chapter 5)
+
+library(stringr)
+
+human <- read.table("/Users/streetman/IODS-project/data/human.csv", sep  =",", header = T)
+
+names(human)
+
+str(human)
+
+summary(human)
+
+tail(human)
+
+human <- mutate(human, GNI = as.numeric(str_replace(GNI, pattern=",", replace ="")))
+
+tail(human, 20)
+
+keep <- c("Country", "edu2F", "labF_labM_ratio", "Life.Expectancy.at.Birth", "Expected.Years.of.Education", "Gross.National.Income..GNI..per.Capita", "Maternal.Mortality.Ratio", "Adolescent.Birth.Rate", "Percent.Representation.in.Parliament")
+
+human <- select(human, one_of(keep))
+
+complete.cases(human)
+
+data.frame(human[-1], comp = complete.cases(human))
+
+human <- filter(human, complete.cases(human))
+
+human <- human[1:155, ]
+
+rownames(human) <- human$Country
+
+human <- select(human, -Country)
+
+str(human)
+
+tail(human, 60)
+
+colnames(human)
+
+setnames(human, old=c("edu2F", "labF_labM_ratio", "Life.Expectancy.at.Birth", "Expected.Years.of.Education", "Gross.National.Income..GNI..per.Capita", "Maternal.Mortality.Ratio", "Adolescent.Birth.Rate", "Percent.Representation.in.Parliament"), new=c("Edu2.FM", "Labo.FM", "Life.Exp", "Edu.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F"))
+
+getwd()
+
+write.csv(human, "/Users/streetman/IODS-project/data/human.csv")
 

@@ -1,0 +1,107 @@
+# Exercise 5
+
+```{r, include=T}
+library(data.table)
+library(dplyr)
+library(GGally)
+library(corrplot)
+library(tidyr)
+library(ggplot2)
+library(FactoMineR)
+```
+
+
+## 1. Getting and reading the .csv file
+
+```{r, include=T}
+getwd()
+human <- read.csv(file = "/Users/streetman/IODS-project/data/human.csv", header = T, sep=",")
+dim(human)
+str(human)
+
+```
+
+### Commentary
+We can detect for example expected years of education is 4.10 years at minimum with a median of 8.4 years.
+
+
+## 2. Graphical overview
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=14, fig.height=18}
+
+human$GNI <- as.integer(human$GNI)
+
+human_ <- human[,-1]
+
+dim(human_)
+str(human_)
+
+ggpairs(human_)
+
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=12}
+
+cor(human_) %>% corrplot(method="circle", type="upper", cl.pos="b", tl.pos="d", tl.cex = 0.6)
+
+```
+
+
+
+## 3. PCA
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=12}
+pca_human <- prcomp(human_)
+
+biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+```
+
+
+## 4. Standardize
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=12}
+
+human_std <- scale(human_)
+summary(human_std)
+pca_human <- prcomp(human_std)
+biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+```
+
+
+
+
+## 5. Interpretation
+
+
+
+
+## 6. Loading the Tea dataset
+
+
+```{r, message=FALSE, warning=FALSE}
+
+data(tea)
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+tea_time <- select(tea, one_of(keep_columns))
+
+summary(tea_time)
+str(tea_time)
+
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+### MCA
+
+```{r, include=T}
+mca <- MCA(tea_time, graph = FALSE)
+
+summary(mca)
+
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+
+
+
