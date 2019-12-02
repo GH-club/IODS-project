@@ -21,6 +21,17 @@ summary(human)
 ```
 
 ### Commentary
+The dataset is about United Nations Development Programme. Variables are in respective order:
+
+Ratio of secondary education of female/male (Edu2.FM)
+Ratio of labour forced female/male (Labo.FM)
+Expected years of schooling (Edu.Exp)
+Life expectancy at birth (Life.Exp)
+Gross National Income per capita (GNI)
+Maternal mortality ratio (Mat.Mor)
+Adolescent birth rate (Ado.Birth)
+Percentage of female representatives in parliament (Parli.F)
+
 We can detect for example expected years of education is 5.40 years at minimum with a median of 13.18 years. Regarding life expectancy, the minimum value is 49 years of age and mean value being approx. 72 years.
 
 
