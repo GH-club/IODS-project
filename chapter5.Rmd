@@ -2,12 +2,10 @@
 
 ```{r, include=T}
 library(data.table)
-library(dplyr)
 library(GGally)
 library(corrplot)
 library(tidyr)
 library(ggplot2)
-library(FactoMineR)
 ```
 
 
@@ -79,17 +77,25 @@ biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
 
 
 ```{r, message=FALSE, warning=FALSE}
+library(FactoMineR)
 
 data(tea)
 
+str(tea)
+dim(tea)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+
 keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
 
-tea_time <- select(tea, one_of(keep_columns))
+# select the 'keep_columns' to create a new dataset
+tea_time <- dplyr::select(tea, one_of(keep_columns))
 
-summary(tea_time)
-str(tea_time)
-
-gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+# visualize the dataset
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x =  element_text(angle = 45, hjust = 1, size = 8))
 ```
 
 ### MCA
