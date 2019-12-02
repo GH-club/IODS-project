@@ -16,11 +16,12 @@ getwd()
 human <- read.csv(file = "/Users/streetman/IODS-project/data/human.csv", header = T, sep=",")
 dim(human)
 str(human)
+summary(human)
 
 ```
 
 ### Commentary
-We can detect for example expected years of education is 4.10 years at minimum with a median of 8.4 years.
+We can detect for example expected years of education is 5.40 years at minimum with a median of 13.18 years. Regarding life expectancy, the minimum value is 49 years of age and mean value being approx. 72 years.
 
 
 ## 2. Graphical overview
@@ -45,6 +46,11 @@ cor(human_) %>% corrplot(method="circle", type="upper", cl.pos="b", tl.pos="d", 
 
 ```
 
+### Commentary
+
+Graphical illustration demonstrates distributions of the data variables and their correlation to each other.
+
+Correlation matrix is giving further supportive evidence of the correlation between data parameters.
 
 
 ## 3. PCA
@@ -52,8 +58,25 @@ cor(human_) %>% corrplot(method="circle", type="upper", cl.pos="b", tl.pos="d", 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=12}
 pca_human <- prcomp(human_)
 
-biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+s <- summary(pca_human)
+
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+
+pca_pr
 ```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=12}
+
+biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+
+```
+
+
+### Commentary
+
+The first table is indicating that majority of the data is explained by principal component 1 (PC1) so the data could be summarized towards that dimension.
+
+The biplot graph indicates that the PC1 explains majority of cross-observation variation with maternal mortality as a driving component.
 
 
 ## 4. Standardize
@@ -62,15 +85,30 @@ biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
 human_std <- scale(human_)
 summary(human_std)
 pca_human <- prcomp(human_std)
-biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+
+s <- summary(pca_human)
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+pca_pr
 ```
 
 
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=12}
+biplot(pca_human, choices = 1:2, cex=c(0.8, 1), col=c("grey40", "deeppink2"))
+```
+
+### Commentary
+
+GNI, Edu2.Ratio, Edu.Exp and Life.Exp have negative weights on PC1.
+
+Mat.Mor and Ado.Birth have positive weights on PC1.
+
+Labo.FM has the most positive effect on PC2.
 
 
 ## 5. Interpretation
+Components related to e.g. women education and life expectancy seem to explain differences between observations due to their largest weights on PC1.
 
-
+Component related to women labour seems to affect the PC2 the most.
 
 
 ## 6. Loading the Tea dataset
@@ -108,6 +146,10 @@ summary(mca)
 plot(mca, invisible=c("ind"), habillage = "quali")
 ```
 
+### Commentary
 
+The graph shows associations between the categories. Dimensions are explanatory percentages of the variation with respective values shown in prackets.
+
+Dimension 1 and Dimension 2 explain 18,4 % and 17,1% of the variation, respectively.
 
 
