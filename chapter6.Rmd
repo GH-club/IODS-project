@@ -1,0 +1,289 @@
+# Exercise 6
+
+## 1. Dataset "RATS"
+
+### Loading and exploring
+
+```{r, include=T}
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+ratsl <- read.csv("/Users/streetman/IODS-project/data/RATSL.csv", row.names = 1)
+
+ratsl$Group <- factor(ratsl$Group)
+ratsl$ID <- factor(ratsl$ID)
+
+ratsl <- ratsl %>% group_by(Time) %>% mutate(stweight = (Weight - mean(Weight)) / sd(Weight)) %>% ungroup()
+
+str(ratsl)
+
+```
+
+#### Commentary
+
+16 rats, divided into 3 groups based on different diets
+
+
+### Graphics
+
+```{r, include=T}
+
+ggplot(ratsl, aes(x = Time, y = Weight, linetype = ID)) + geom_line() + facet_grid(. ~ Group, labeller = label_both) + scale_linetype_manual(values = rep(1:6, times=4)) + theme(legend.position = "none") +   scale_y_continuous(limits = c(min(ratsl$Weight), max(ratsl$Weight)))
+
+```
+
+#### Commentary
+
+Rats are gaining weight with the difference in group 1 that they are lighter in all points with a variance also between the subject with a decrease of value.
+
+### Summarizing the dataset
+
+```{r, include=T}
+
+n <- ratsl$Time %>% unique() %>% length()
+
+ratssum <- ratsl %>% group_by(Group, Time) %>% summarise(mean = mean(Weight), se = ( sd(Weight) / sqrt(n) )) %>% ungroup()
+
+glimpse(ratssum)
+
+par(mfrow = c(1,2))
+
+ggplot(ratssum, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  theme(legend.position = c(0.9,0.5)) +
+  scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
+
+ggplot(ratssum, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3) +
+  theme(legend.position = c(0.9,0.5)) +
+  scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
+
+```
+
+#### Commentary
+
+In time, means are increasing in both groups.
+ 
+
+### Box-plotting
+ 
+```{r, include=T}
+
+ggplot(ratsl, aes(x = factor(Time), y = Weight, fill = Group)) + geom_boxplot()
+
+```
+ 
+ 
+### Elements for summary (visualizing, excluding)
+ 
+```{r, include=T}
+
+rat8s <- ratsl %>%
+  filter(Time > 0) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(Weight) ) %>%
+  ungroup()
+
+glimpse(rat8s)
+
+ggplot(rat8s, aes(x=Group, y = mean)) + geom_boxplot() + stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white")
+
+```
+
+ 
+```{r, include=T}
+
+glimpse(rat8s)
+
+rat8s1 <- filter(rat8s, Group == 2 & mean < 550 | Group == 1 & mean > 260 | Group == 3 & mean > 500)
+
+glimpse(rat8s1)
+
+ggplot(rat8s1, aes(x=Group, y = mean)) + geom_boxplot() + stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white")
+
+```
+
+ 
+### Comparing means
+ 
+```{r}
+
+summary(aov(mean ~ Group, data = rat8s1))
+
+```
+ 
+#### Commentary
+
+Using T-test, outliers excluded, no difference between the groups yet no signicance either
+ 
+ 
+```{r, include=T}
+
+kruskal.test(mean ~ Group, data = rat8s1)
+
+```
+
+#### Commentary
+
+With this test we can find signicance
+
+### More analysis (also adding from the original dataset)
+ 
+```{r, include=T}
+
+rats <- read.csv("/Users/streetman/IODS-project/data/rats.csv", row.names = 1)
+
+rat8s2 <- rat8s %>% mutate(baseline = rats$WD1)
+
+glimpse(rat8s2)
+
+
+fit <- lm(mean ~ baseline + Group, data = rat8s2)
+summary(fit)
+
+```
+
+#### Commentary
+
+Baseline is showing relatedness to means in later phase, yet, after controlment the baseline no signicance between the group means.
+
+
+## 2. Dataset "BPRS"
+
+
+### Loading
+	 
+```{r, include=T}
+
+bprsl <- read.csv(file = "/Users/streetman/IODS-project/data/bprsl.csv", row.names = 1)
+
+bprsl$treatment <- factor(bprsl$treatment)
+
+bprsl$subject <- factor(bprsl$subject)
+
+glimpse(bprsl)
+
+```
+	 
+
+### Graphical
+
+```{r, include=T}
+ggplot(bprsl, aes(x = weeks, y = bprs, group = subject)) + geom_line() + facet_grid(. ~ treatment, labeller = label_both) 
+
+```
+
+#### Commentary
+Points are decreasing in time with all individuals.
+	 
+
+### Visualizing
+
+```{r, include=T}
+
+bps_reg <- lm(bprs ~ weeks + treatment, data=bprsl)
+summary(bps_reg)
+
+```
+	 
+#### Commentary
+
+LRM of BPRS with explanatory variables of response, weeks and treatment group indicates that decreasing in time with the latter variable being not significant.
+
+	 
+### RIM (Random Intercept Model)
+
+```{r, include=T}
+
+library(lme4)
+
+bps_ref <- lmer(bprs ~ weeks + treatment + (1|subject), data = bprsl, REML=FALSE)
+
+summary(bps_ref)
+	
+```
+	 
+#### Commentary
+
+Within-subject elements are not included.
+
+
+### RIM and RSM (Random Slope Model)
+	 
+```{r, inlclude=T}
+
+bps_ref2 <- lmer(bprs ~ weeks + treatment + (weeks|subject), data = bprsl, REML=FALSE)
+
+summary(bps_ref2)
+
+```
+
+### Analyzing with ANOVA
+
+```{r, include=T}
+
+anova(bps_ref, bps_ref2)
+
+```
+	 
+#### Commentary
+
+Model 2 is better
+
+
+### RIM and SLM (interaction included)
+
+```{r, include=T}
+
+bps_ref3 <- lmer(bprs ~ weeks * treatment + (weeks|subject), data = bprsl, REML=FALSE)
+
+summary(bps_ref3)
+
+```
+
+#### Commentary
+
+The model indicates that the BPRS slopes with a decreasing element are higher for individuals in treatment group 2 in comparison.
+
+```{r, include=T}
+
+anova(bps_ref2, bps_ref3)
+
+```
+	 
+#### Commentary
+
+Model 3 doesn't show any superiority, therefore, not better
+
+
+### Fitting and plotting
+	 
+```{r, include=T}
+
+Fitted <- fitted(bps_ref2)
+
+bprsl <- bprsl %>% mutate(Fitted)
+
+p1 <- ggplot(bprsl, aes(x = weeks, y = bprs, group = subject)) + geom_line() + facet_grid(. ~ treatment, labeller = label_both) + scale_x_continuous(name = "Time (weeks)", breaks = seq(0, 8, 1)) +  ylim(0,100) + theme(legend.position = "top") + ggtitle("Observed")
+
+p2 <- ggplot(bprsl, aes(x = weeks, y = Fitted, group = subject)) +
+	  geom_line() + facet_grid(. ~ treatment, labeller = label_both) +
+	  scale_x_continuous(name = "Time (weeks)", breaks = seq(0, 8, 1)) +
+	  ylim(0, 100) +
+	  theme(legend.position = "top") + ggtitle("Fitted")
+	
+p1
+
+p2
+
+```
+
