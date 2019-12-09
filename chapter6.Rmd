@@ -118,18 +118,8 @@ summary(aov(mean ~ Group, data = rat8s1))
  
 #### Commentary
 
-Using T-test, outliers excluded, no difference between the groups yet no signicance either
+Outliers excluded, no difference between the groups, yet no signicance either
  
- 
-```{r, include=T}
-
-kruskal.test(mean ~ Group, data = rat8s1)
-
-```
-
-#### Commentary
-
-With the K-W test we can find significance
 
 ### More analysis (also adding from the original dataset)
  
