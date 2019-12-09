@@ -26,7 +26,7 @@ str(ratsl)
 16 rats, divided into 3 groups based on different diets
 
 
-### Graphics
+### Visualizing
 
 ```{r, include=T}
 
@@ -36,9 +36,8 @@ ggplot(ratsl, aes(x = Time, y = Weight, linetype = ID)) + geom_line() + facet_gr
 
 #### Commentary
 
-Rats are gaining weight with the difference in group 1 that they are lighter in all points with a variance also between the subject with a decrease of value.
+All rats are gaining weight. Group 1 has the lightest rats in all points in time, and also less variability between the subjects compared to other groups.
 
-### Summarizing the dataset
 
 ```{r, include=T}
 
@@ -68,13 +67,7 @@ ggplot(ratssum, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
   scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
 
 ```
-
-#### Commentary
-
-In time, means are increasing in both groups.
  
-
-### Box-plotting
  
 ```{r, include=T}
 
@@ -82,8 +75,12 @@ ggplot(ratsl, aes(x = factor(Time), y = Weight, fill = Group)) + geom_boxplot()
 
 ```
  
+#### Commentary
+
+In time, means are increasing in all groups and boxplots are showing differences between the groups with the notion of being outside of standard error in each time point.
  
-### Elements for summary (visualizing, excluding)
+
+### Elements for summary (visualizing, excluding outliers, comparing means)
  
 ```{r, include=T}
 
@@ -113,8 +110,6 @@ ggplot(rat8s1, aes(x=Group, y = mean)) + geom_boxplot() + stat_summary(fun.y = "
 ```
 
  
-### Comparing means
- 
 ```{r}
 
 summary(aov(mean ~ Group, data = rat8s1))
@@ -134,7 +129,7 @@ kruskal.test(mean ~ Group, data = rat8s1)
 
 #### Commentary
 
-With this test we can find signicance
+With the K-W test we can find significance
 
 ### More analysis (also adding from the original dataset)
  
@@ -262,7 +257,7 @@ anova(bps_ref2, bps_ref3)
 	 
 #### Commentary
 
-Model 3 doesn't show any superiority, therefore, not better
+Model 3 doesn't show significant superiority, therefore, not better
 
 
 ### Fitting and plotting
